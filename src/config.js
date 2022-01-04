@@ -11,7 +11,7 @@ export const CORNER_RADIUS = 3;
 export const AVATAR_SIZE = 24;
 
 export const HEADER_HEIGHT = 20;
-export const TASK_BAR_HEIGHT = 8;
+export const TASK_BAR_HEIGHT = 12;
 export const TASK_ROW_HEIGHT =
   MARGIN + AVATAR_SIZE + MARGIN + TASK_BAR_HEIGHT + MARGIN;
 
