@@ -1,34 +1,16 @@
-import { useSyncExternalStore } from "react";
-import history from "history/browser";
+import React, { useContext } from "react";
 import Legend from "./Legend";
-import {
-  getCurrentIndex,
-  getMaxIndex,
-  subscribeToHistory,
-} from "./utils/history";
+// @ts-ignore
 import styles from "./Header.module.css";
-
-function getSnapshot() {
-  // Stringify as a lazy way of avoiding invalidating snapshot via new array/object wrapper.
-  return JSON.stringify([getCurrentIndex(), getMaxIndex()]);
-}
+import { TimelineDataContext } from './hooks/TimelineData';
 
 async function copyLocation() {
-  await navigator.clipboard.writeText(window.location);
+  await navigator.clipboard.writeText(window.location.href);
   window.alert("Use the URL (in your clipboard) to share this plan.");
 }
 
-function undo() {
-  history.back();
-}
-
-function redo() {
-  history.forward();
-}
-
-export default function Header({ team, tasks }) {
-  const snapshot = useSyncExternalStore(subscribeToHistory, getSnapshot);
-  const [currentIndex, maxIndex] = JSON.parse(snapshot);
+export default function Header() {
+  const timelineData = useContext(TimelineDataContext)!
 
   return (
     <div className={styles.Header}>
@@ -38,26 +20,26 @@ export default function Header({ team, tasks }) {
           onClick={copyLocation}
           title="Share plan"
         >
-          <ShareIcon className={styles.Icon} width={20} height={20} />
+          <ShareIcon />
         </button>
         <button
           className={styles.ButtonOrLink}
-          onClick={undo}
-          disabled={currentIndex <= 0}
+          onClick={timelineData.undoHistory.undo}
+          disabled={timelineData.undoHistory.currentIndex <= 0}
           title="Undo change"
         >
-          <UndoIcon className={styles.Icon} width={20} height={20} />
+          <UndoIcon />
         </button>
         <button
           className={styles.ButtonOrLink}
-          onClick={redo}
-          disabled={currentIndex >= maxIndex}
+          onClick={timelineData.undoHistory.redo}
+          disabled={timelineData.undoHistory.currentIndex >= timelineData.undoHistory.maxIndex}
           title="Redo change"
         >
-          <RedoIcon className={styles.Icon} width={20} height={20} />
+          <RedoIcon />
         </button>
       </div>
-      <Legend team={team} tasks={tasks} />
+      <Legend />
       <div className={styles.RightContainer}>
         <a
           href="https://github.com/bvaughn/planner"
@@ -65,7 +47,7 @@ export default function Header({ team, tasks }) {
           rel="noreferrer"
           className={styles.ButtonOrLink}
         >
-          <GitHubIcon width={20} height={20} />
+          <GitHubIcon />
         </a>
       </div>
     </div>

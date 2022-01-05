@@ -10,32 +10,32 @@ export const INTERVAL_UNIT_WEEK = "week";
 export const INTERVAL_UNIT_MONTH = "month";
 export const INTERVAL_UNIT_YEAR = "year";
 
-function zeropad(number) {
+function zeropad(number: number) {
   return number < 10 ? `0${number}` : number;
 }
 
-export function compare(a, b) {
+export function compare(a: Temporal.Instant, b: Temporal.Instant) {
   return Temporal.Instant.compare(a, b);
 }
 
-export function format(temporal, formatString) {
+export function format(temporal: Temporal.Instant, formatString: Intl.DateTimeFormatOptions) {
   const zonedDate = temporal.toZonedDateTimeISO("GMT");
   return zonedDate.toLocaleString("en-us", formatString);
 }
 
-export function fromMilliseconds(milliseconds) {
+export function fromMilliseconds(milliseconds: number) {
   return Temporal.Instant.fromEpochMilliseconds(milliseconds);
 }
 
-export function fromString(dateString, timeString = "00:00") {
+export function fromString(dateString: string, timeString = "00:00") {
   return Temporal.Instant.from(`${dateString}T${timeString}Z`);
 }
 
-export function subtract(temporal, milliseconds) {
+export function subtract(temporal: Temporal.Instant, milliseconds: number) {
   return temporal.subtract(Temporal.Duration.from({ milliseconds }));
 }
 
-export function getIntervalLabel(date, unit) {
+export function getIntervalLabel(date: Temporal.Instant, unit: string) {
   switch (unit) {
     case INTERVAL_UNIT_DAY:
       return format(date, { weekday: "short" });
@@ -53,7 +53,7 @@ export function getIntervalLabel(date, unit) {
   }
 }
 
-export function getIntervalRange(startDate, stopDate) {
+export function getIntervalRange(startDate: Temporal.Instant, stopDate: Temporal.Instant) {
   if (!startDate || !stopDate) {
     debugger;
   }
@@ -102,7 +102,7 @@ export function getIntervalRange(startDate, stopDate) {
   }
 }
 
-export function getIntervalSize(startDate, stopDate) {
+export function getIntervalSize(startDate: Temporal.Instant, stopDate: Temporal.Instant) {
   const unit = getIntervalUnit(startDate, stopDate);
   switch (unit) {
     case INTERVAL_UNIT_DAY:
@@ -116,7 +116,7 @@ export function getIntervalSize(startDate, stopDate) {
   }
 }
 
-export function getIntervalUnit(start, stop) {
+export function getIntervalUnit(start: Temporal.Instant, stop: Temporal.Instant) {
   if (!start || !stop) {
     debugger;
   }
@@ -132,4 +132,27 @@ export function getIntervalUnit(start, stop) {
   } else {
     return INTERVAL_UNIT_YEAR;
   }
+}
+
+export function monthIndexToDateString(index: number) {
+  let day;
+  switch (index % 1) {
+    case 0.25:
+      day = "07";
+      break;
+    case 0.5:
+      day = "15";
+      break;
+    case 0.75:
+      day = "21";
+      break;
+    default:
+      day = "01";
+      break;
+  }
+
+  const monthNum = Math.floor(index) + 1;
+  const month =  monthNum < 10 ? `${monthNum}` : `0${monthNum}`;
+
+  return `2022-${month}-${day}`;
 }

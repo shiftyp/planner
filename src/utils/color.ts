@@ -1,4 +1,4 @@
-export function hexToRgb(hex) {
+export function hexToRgb(hex: string) {
   if (hex.length === 4) {
     hex = `#${hex.charAt(1)}${hex.charAt(1)}${hex.charAt(2)}${hex.charAt(
       2
@@ -14,8 +14,8 @@ export function hexToRgb(hex) {
     : null;
 }
 
-export function getLuminance(color) {
-  const rgb = Array.isArray(color) ? color : hexToRgb(color);
+export function getLuminance(color: string | number[]) {
+  const rgb = Array.isArray(color) ? color : hexToRgb(color)!;
 
   const values = rgb.map((value) => {
     const n = value / 255;
@@ -26,9 +26,9 @@ export function getLuminance(color) {
   );
 }
 
-export function getContrastRatio(colorA, colorB) {
-  const luminanceA = getLuminance(hexToRgb(colorA));
-  const luminanceB = getLuminance(hexToRgb(colorB));
+export function getContrastRatio(colorA: string, colorB: string) {
+  const luminanceA = getLuminance(hexToRgb(colorA)!);
+  const luminanceB = getLuminance(hexToRgb(colorB)!);
 
   return (
     (Math.max(luminanceA, luminanceB) + 0.05) /
@@ -53,7 +53,7 @@ const colors = [
 ];
 const stringToColorMap = new Map();
 
-export function getColorForString(string) {
+export function getColorForString(string: string) {
   if (!string) {
     return "#000000";
   }

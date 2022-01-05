@@ -1,4 +1,6 @@
-export const team = {
+import { Task, Team } from './types';
+
+export const team: Team = {
   bvaughn: {
     avatar: "https://avatars.githubusercontent.com/u/29597",
     name: "Brian",
@@ -9,7 +11,7 @@ export const team = {
   },
 };
 
-export const tasks = [];
+export const tasks: Task[] = [];
 
 let uidCounter = 0;
 
@@ -21,14 +23,14 @@ function createTask({
   owner = "team",
   start,
   stop,
-}) {
+}: Partial<Task>) {
   const task = {
     id,
     name,
     owner,
     start,
     stop,
-  };
+  } as Task;
 
   if (isOngoing) {
     task.isOngoing = true;

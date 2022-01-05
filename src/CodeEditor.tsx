@@ -1,35 +1,36 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import React from 'react'
 import Highlight, { defaultProps } from "prism-react-renderer";
 import theme from "prism-react-renderer/themes/palenight";
+// @ts-ignore
 import styles from "./CodeEditor.module.css";
+import { useMagicClass } from './magic/useMagicClass';
+import { FocusManager } from './hooks/FocusManager';
+import { CodeData } from './types';
 
-export default function Prism({ code, label, onChange, testName }) {
-  const [isFocused, setIsFocused] = useState();
-  const textAreaRef = useRef();
+export default function Prism({
+  data,
+  label,
+  testName,
+}: {
+  data: CodeData<any>;
+  label: string;
+  testName: string;
+}) {
+  const focusManager = useMagicClass(FocusManager)
 
-  useLayoutEffect(() => {
-    if (isFocused) {
-      const textArea = textAreaRef.current;
-      if (textArea) {
-        textArea.focus();
-      }
-    }
-  }, [isFocused]);
-
-  const handleBlur = (event) => {
-    setIsFocused(false);
-
-    onChange(event.target.value);
+  const handleBlur = (event: React.SyntheticEvent<HTMLTextAreaElement, FocusEvent>) => {
+    focusManager.blur()
+    data.update((event.target as HTMLTextAreaElement).value);
   };
 
-  const handleFocus = (event) => {
-    setIsFocused(true);
+  const handleFocus = (event: React.SyntheticEvent<HTMLPreElement, FocusEvent>) => {
+    focusManager.focus()
   };
 
-  const handleKeyDown = (event) => {
-    switch (event.keyCode) {
+  const handleKeyDown = (event: React.SyntheticEvent<HTMLTextAreaElement, KeyboardEvent>) => {
+    switch (event.nativeEvent.keyCode) {
       case 27: // Escape
-        event.target.blur();
+        focusManager.blur()
         break;
       default:
         break;
@@ -37,24 +38,25 @@ export default function Prism({ code, label, onChange, testName }) {
   };
 
   let content = null;
-  if (isFocused) {
+  
+  if (focusManager.isFocused) {
     content = (
       <textarea
         data-testname={`CodeEditor-textarea-${testName}`}
-        defaultValue={code}
+        defaultValue={data.string}
         className={styles.TextArea}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
-        ref={textAreaRef}
+        ref={focusManager.setTarget}
         spellCheck="false"
       />
     );
   } else {
     content = (
       <Highlight
-        key={code}
+        key={data.string}
         {...defaultProps}
-        code={code}
+        code={data.string}
         theme={theme}
         language="javascript"
       >
@@ -83,7 +85,7 @@ export default function Prism({ code, label, onChange, testName }) {
     <>
       <div className={styles.Header}>
         <div className={styles.HeaderText}>{label}</div>
-        {isFocused && (
+        {focusManager.isFocused && (
           <div className={styles.HeaderHint}>(auto-saves on blur)</div>
         )}
       </div>
