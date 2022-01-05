@@ -3,12 +3,16 @@ import { Task, Team } from './types';
 export const team: Team = {
   bvaughn: {
     avatar: "https://avatars.githubusercontent.com/u/29597",
-    name: "Brian",
+    name: "Brian"
+  },
+  rlynch: {
+    avatar: "https://avatars.githubusercontent.com/u/131928",
+    name: "Ryan"
   },
   team: {
     avatar: null,
-    name: "Unclaimed",
-  },
+    name: "Unclaimed"
+  }
 };
 
 export const tasks: Task[] = [];
@@ -79,5 +83,5 @@ createTask({
   start: "2022-03-01",
   stop: "2022-04-01",
   isOngoing: true,
-  owner: "team",
+  owner: "rlynch",
 });

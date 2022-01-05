@@ -11,7 +11,7 @@ export class ImagePreloader {
 
   public ownerToImageMap = new Map<
     Owner,
-    { height: number; width: number; image: HTMLImageElement }
+    { height: number; width: number; image: HTMLImageElement, url: string }
   >();
 
   @isLayoutEffect<ImagePreloader>(({ team }) => [team?.value])
@@ -24,7 +24,7 @@ export class ImagePreloader {
       if (
         owner?.avatar != null &&
         typeof owner?.avatar === "string" &&
-        !this.ownerToImageMap.get(owner)
+        this.ownerToImageMap.get(owner)?.url !== owner.avatar
       ) {
         promises.push(
           new Promise((resolve) => {
@@ -33,6 +33,7 @@ export class ImagePreloader {
               this.ownerToImageMap.set(owner, {
                 height: image.naturalHeight,
                 image,
+                url: image.src, 
                 width: image.naturalWidth,
               });
 

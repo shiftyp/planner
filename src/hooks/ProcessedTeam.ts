@@ -23,7 +23,7 @@ export class ProcessedTeam implements CodeData<Team>{
     } catch (e) {}
   }
 
-  @isMemo<ProcessedTeam>(({ urlData }) => [urlData.data])
+  @isMemo<ProcessedTeam>(({ string }) => [string])
   public get namesArray() {
     const set = new Set<string>();
 
@@ -48,7 +48,7 @@ export class ProcessedTeam implements CodeData<Team>{
     return Array.from(set);
   }
 
-  @isMemo<ProcessedTeam>(({ urlData }) => [urlData.data])
+  @isMemo<ProcessedTeam>(({ string }) => [string])
   public get nameToAvatarMap() {
     const map = new Map<string, string>();
 
